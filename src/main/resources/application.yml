@@ -1,0 +1,37 @@
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allow-credentials: true
+            allowed-methods: [GET,HEAD,POST,PUT,DELETE,PATCH,TRACE,CONNECT]
+            allowed-origins:
+              - http://localhost
+              - http://localhost:3000
+              - http://localhost:4000
+              - http://localhost:5000
+              - http://localhost:6000
+              - http://localhost:7000
+              - http://localhost:8000
+              - http://localhost:8080
+              - http://localhost:9000
+              - http://localhost:10000
+  application:
+    name: gateway
+server:
+  port: 8084
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
