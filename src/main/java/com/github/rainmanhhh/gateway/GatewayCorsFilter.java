@@ -1,5 +1,8 @@
 package com.github.rainmanhhh.gateway;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -20,6 +23,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class GatewayCorsFilter implements WebFilter {
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private Set<String> allowedOrigins = new HashSet<>(0);
     private String allowedHeaders = null;
     private String allowedMethods = null;
@@ -27,11 +31,17 @@ public class GatewayCorsFilter implements WebFilter {
     private String exposedHeaders = null;
     private String maxAge = null;
 
-    public GatewayCorsFilter(GatewayProps gatewayProps) {
+    public GatewayCorsFilter(GatewayProps gatewayProps, Environment environment) {
+        Set<String> activeProfiles = Set.of(environment.getActiveProfiles());
         CorsConfiguration corsProps = gatewayProps.getCors();
         if (corsProps == null) corsProps = new CorsConfiguration().applyPermitDefaultValues();
         List<String> allowedOrigins = corsProps.getAllowedOrigins();
-        if (allowedOrigins != null) this.allowedOrigins.addAll(allowedOrigins);
+        if (allowedOrigins != null) {
+            if ((activeProfiles.contains("production") || activeProfiles.contains("prod"))
+                    && allowedOrigins.contains("*"))
+                log.warn("Using allowedOrigins:* in production is dangerous!");
+            this.allowedOrigins.addAll(allowedOrigins);
+        }
         List<String> allowedHeaders = corsProps.getAllowedHeaders();
         if (allowedHeaders != null) this.allowedHeaders = String.join(",", allowedHeaders);
         List<String> allowedMethods = corsProps.getAllowedMethods();

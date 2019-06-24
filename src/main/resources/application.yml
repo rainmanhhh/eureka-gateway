@@ -23,3 +23,4 @@ gateway:
   cors:
     allow-credentials: true
     allowed-methods: [GET,HEAD,POST,PUT,DELETE,PATCH,TRACE,CONNECT]
+    allowed-origins: ["*"]
