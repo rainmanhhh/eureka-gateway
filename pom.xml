@@ -24,7 +24,11 @@
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
             <groupId>org.springframework.cloud</groupId>
         </dependency>
-
+        <dependency>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <artifactId>spring-boot-starter-test</artifactId>
             <groupId>org.springframework.boot</groupId>
