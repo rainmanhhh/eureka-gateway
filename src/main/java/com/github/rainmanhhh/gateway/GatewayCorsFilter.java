@@ -23,6 +23,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class GatewayCorsFilter implements WebFilter {
     private final Logger log = LoggerFactory.getLogger(getClass());
+    private final String PROCESS_FLAG = "__FILTER_FLAG_" + getClass().getName();
     private Set<String> allowedOrigins = new HashSet<>(0);
     private String allowedHeaders = null;
     private String allowedMethods = null;
@@ -43,7 +44,10 @@ public class GatewayCorsFilter implements WebFilter {
             this.allowedOrigins.addAll(allowedOrigins);
         }
         List<String> allowedHeaders = corsProps.getAllowedHeaders();
-        if (allowedHeaders != null) this.allowedHeaders = String.join(",", allowedHeaders);
+        if (allowedHeaders != null) {
+            if (allowedHeaders.contains("*")) this.allowedHeaders = "*";
+            else this.allowedHeaders = String.join(",", allowedHeaders);
+        }
         List<String> allowedMethods = corsProps.getAllowedMethods();
         if (allowedMethods != null) this.allowedMethods = String.join(",", allowedMethods);
         Boolean allowCredentials = corsProps.getAllowCredentials();
@@ -56,35 +60,40 @@ public class GatewayCorsFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        Object flag = exchange.getAttribute(getClass().getName());
+        Object flag = exchange.getAttribute(PROCESS_FLAG);
         if (flag == null) {
-            exchange.getAttributes().put(getClass().getName(), true);
+            exchange.getAttributes().put(PROCESS_FLAG, true);
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
             HttpHeaders responseHeaders = response.getHeaders();
-            if (request.getMethod() == HttpMethod.OPTIONS) {
-                response.setStatusCode(HttpStatus.OK);
-                responseHeaders.set(HttpHeaders.ALLOW, "*");
-                return Mono.empty();
-            } else {
-                String requestOrigin = request.getHeaders().getOrigin();
-                if (requestOrigin != null &&
-                        (allowedOrigins.contains("*") || allowedOrigins.contains(requestOrigin))
-                ) {
-                    responseHeaders.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, requestOrigin);
-                    if (allowedHeaders != null)
+            String requestOrigin = request.getHeaders().getOrigin();
+            if (requestOrigin != null &&
+                    (allowedOrigins.contains("*") || allowedOrigins.contains(requestOrigin))
+            ) {
+                responseHeaders.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, requestOrigin);
+                if (allowedHeaders != null) {
+                    if (allowedHeaders.equals("*")) {
+                        String allowedHeaders = String.join(",", request.getHeaders().getAccessControlRequestHeaders());
                         responseHeaders.add(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, allowedHeaders);
-                    if (allowedMethods != null)
-                        responseHeaders.add(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, allowedMethods);
-                    if (allowCredentials != null)
-                        responseHeaders.add(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, allowCredentials);
-                    if (exposedHeaders != null)
-                        responseHeaders.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, exposedHeaders);
-                    if (maxAge != null)
-                        responseHeaders.add(HttpHeaders.ACCESS_CONTROL_MAX_AGE, maxAge);
+                    } else {
+                        responseHeaders.add(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, allowedHeaders);
+                    }
                 }
-                return chain.filter(exchange);
+                if (allowedMethods != null)
+                    responseHeaders.add(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, allowedMethods);
+                if (allowCredentials != null)
+                    responseHeaders.add(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, allowCredentials);
+                if (exposedHeaders != null)
+                    responseHeaders.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, exposedHeaders);
+                if (maxAge != null)
+                    responseHeaders.add(HttpHeaders.ACCESS_CONTROL_MAX_AGE, maxAge);
+                if (request.getMethod() == HttpMethod.OPTIONS) {
+                    response.setStatusCode(HttpStatus.OK);
+                    responseHeaders.set(HttpHeaders.ALLOW, "*");
+                    return Mono.empty();
+                }
             }
+            return chain.filter(exchange);
         } else return chain.filter(exchange);
     }
 }
