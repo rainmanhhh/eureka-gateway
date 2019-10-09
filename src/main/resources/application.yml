@@ -24,3 +24,6 @@ gateway:
     allow-credentials: true
     allowed-methods: [GET,HEAD,POST,PUT,DELETE,PATCH,TRACE,CONNECT]
     allowed-origins: ["*"]
+logging:
+  level:
+    com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver: WARN
