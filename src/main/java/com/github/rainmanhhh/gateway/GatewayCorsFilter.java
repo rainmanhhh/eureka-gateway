@@ -2,12 +2,14 @@ package com.github.rainmanhhh.gateway;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.server.ServerWebExchange;
@@ -21,14 +23,18 @@ import java.util.Set;
 import reactor.core.publisher.Mono;
 
 @Component
-public class GatewayCorsFilter implements WebFilter {
+public class GatewayCorsFilter implements WebFilter, Ordered {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final String PROCESS_FLAG = "__FILTER_FLAG_" + getClass().getName();
     private Set<String> allowedOrigins = new HashSet<>(0);
+    @Nullable
     private String allowedHeaders = null;
+    @Nullable
     private String allowedMethods = null;
     private String allowCredentials = "false";
+    @Nullable
     private String exposedHeaders = null;
+    @Nullable
     private String maxAge = null;
 
     public GatewayCorsFilter(GatewayProps gatewayProps, Environment environment) {
@@ -95,5 +101,10 @@ public class GatewayCorsFilter implements WebFilter {
             }
             return chain.filter(exchange);
         } else return chain.filter(exchange);
+    }
+
+    @Override
+    public int getOrder() {
+        return -10000;
     }
 }

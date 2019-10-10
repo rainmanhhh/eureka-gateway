@@ -2,7 +2,6 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="http://maven.apache.org/POM/4.0.0"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <artifactId>eureka-gateway</artifactId>
     <build>
         <plugins>
             <plugin>
@@ -11,6 +10,23 @@
             </plugin>
         </plugins>
     </build>
+    <description>out of box spring cloud api gateway for eureka</description>
+    <groupId>com.github.rainmanhhh</groupId>
+    <artifactId>eureka-gateway</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <name>eureka-gateway</name>
+    <parent>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <relativePath />
+        <version>2.1.9.RELEASE</version> <!-- lookup parent from repository -->
+    </parent>
+
+    <properties>
+        <java.version>11</java.version>
+        <spring-cloud.version>Greenwich.SR3</spring-cloud.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -35,6 +51,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -46,23 +63,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    <description>out of box spring cloud api gateway for eureka</description>
-    <groupId>com.github.rainmanhhh</groupId>
-    <modelVersion>4.0.0</modelVersion>
-
-    <name>eureka-gateway</name>
-
-    <parent>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <groupId>org.springframework.boot</groupId>
-        <relativePath />
-        <version>2.1.8.RELEASE</version> <!-- lookup parent from repository -->
-    </parent>
-
-    <properties>
-        <java.version>11</java.version>
-        <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
-    </properties>
 
     <version>0.0.1-SNAPSHOT</version>
 
