@@ -14,14 +14,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
 
+import javax.annotation.PostConstruct;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.annotation.PostConstruct;
-
-import reactor.core.publisher.Mono;
 
 @ConfigurationProperties("gateway.cors")
 @Component
@@ -46,7 +45,7 @@ public class GatewayCorsFilter extends CorsConfiguration implements IGatewayFilt
 
     @PostConstruct
     private void init() {
-        Set<String> activeProfiles = Set.of(environment.getActiveProfiles());
+        Set<String> activeProfiles = new HashSet<>(Arrays.asList(environment.getActiveProfiles()));
         applyPermitDefaultValues();
         List<String> allowedOrigins = getAllowedOrigins();
         if (allowedOrigins != null) {
