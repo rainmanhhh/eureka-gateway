@@ -19,7 +19,7 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <groupId>org.springframework.boot</groupId>
         <relativePath />
-        <version>2.1.9.RELEASE</version> <!-- lookup parent from repository -->
+        <version>2.2.4.RELEASE</version> <!-- lookup parent from repository -->
     </parent>
 
     <dependencies>
@@ -55,9 +55,7 @@
 
     <properties>
         <java.version>8</java.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <spring-cloud.version>Greenwich.SR3</spring-cloud.version>
+        <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
     </properties>
 
     <dependencyManagement>
@@ -72,6 +70,6 @@
         </dependencies>
     </dependencyManagement>
 
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
 
 </project>
