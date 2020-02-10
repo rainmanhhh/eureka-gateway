@@ -127,7 +127,7 @@ public class GatewayCorsFilter extends CorsConfiguration implements WebFilter, O
           return Mono.empty();
         }
       }
-      return chain.filter(exchange);
-    } else return chain.filter(exchange);
+    }
+    return chain.filter(exchange);
   }
 }
