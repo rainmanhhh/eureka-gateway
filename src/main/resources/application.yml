@@ -1,4 +1,4 @@
 spring:
   profiles:
-    include: ms,common
+    include: gateway,common
     active: dev
