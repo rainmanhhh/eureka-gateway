@@ -30,3 +30,5 @@ ez:
       value: 98765432109876543210987654321021
   jwt:
     secret-key: 12345678901234567890123456789012
+  gateway:
+    rule-uri: /BASE-DATA/rules
