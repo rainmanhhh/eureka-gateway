@@ -1,6 +1,8 @@
 eureka:
   instance:
+    appname: ${spring.application.name}
     prefer-ip-address: true
 logging:
   level:
+    # hide eureka heartbeat log
     com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver: warn
