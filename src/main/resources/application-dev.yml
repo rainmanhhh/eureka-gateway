@@ -1,8 +1,6 @@
-eureka:
-  client:
-    enabled: false
-    service-url:
-      defaultZone: http://127.0.0.1:8761/eureka
+ez:
+  gateway:
+    rule-uri: /BASE-DATA/rules # 应修改为实际运行环境中的路径
 spring:
   cloud:
     gateway:
@@ -20,15 +18,22 @@ spring:
           filters:
             - StripPrefix=1
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin Access-Control-Expose-Headers
-logging:
-  level:
-    root: info
-    web: debug
-ez:
-  auth:
-    service-api-key:
-      value: 98765432109876543210987654321021
-  jwt:
-    secret-key: 12345678901234567890123456789012
-  gateway:
-    rule-uri: /BASE-DATA/rules
+eureka:
+  client:
+    enabled: false # 本地启动dev server时不将服务注册到eureka
+## 以下内容与运行环境相关，配置在config/application-env.yml中（启动脚本中应指定激活profile: env)
+#logging:
+#  level:
+#    root: info
+#    web: debug
+#eureka:
+#  client:
+#    service-url:
+#      enabled: true
+#      defaultZone: http://127.0.0.1:8761/eureka
+#ez:
+#  auth:
+#    service-api-key:
+#      value: 98765432109876543210987654321021
+#  jwt:
+#    secret-key: 12345678901234567890123456789012
